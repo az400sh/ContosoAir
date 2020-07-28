@@ -8,11 +8,16 @@ steps:
       command: 'custom'
       customcommand: 'install --production'
   - script: |
-    npm install
-    npm run build
-    npm test
+      npm install
+      npm run build
+      npm test
     displayName: 'Run unit tests'
     continueOnError: true
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: $(System.DefaultWorkingDirectory)/test-report.xml
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish Code Coverage'
     condition: 'in(variables[''Agent.JobStatus''], ''Succeeded'')'
